@@ -10,6 +10,7 @@ let window: BrowserWindow;
 
 function createWindow() {
     window = new BrowserWindow({
+        show: false,
         width: 1080,
         minWidth: 680,
         height: 840,
@@ -32,6 +33,10 @@ function createWindow() {
         window.webContents.openDevTools();
         // window.maximize();
     }
+
+    window.once('ready-to-show', () => {
+        window.show();
+    });
 }
 
 const isFirstInstance = app.requestSingleInstanceLock();
