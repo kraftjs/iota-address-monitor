@@ -1,5 +1,6 @@
 {
   "name": "iota-address-monitor",
+  "productName": "IOTA Address Monitor",
   "description": "Electron application to monitor IOTA addresses for their latest balances; written in Svelte and Typescript",
   "author": "Jason Kraft",
   "license": "MIT",
@@ -12,7 +13,15 @@
     "dev": "rollup -c -w",
     "start": "npm run compile && electron .",
     "compile": "tsc",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "out": "npm run out:win && npm run out:mac && npm run out:linux",
+    "out:win": "rollup -c && tsc && electron-builder build --win --publish never",
+    "out:mac": "rollup -c && tsc && electron-builder build --mac --publish never",
+    "out:linux": "rollup -c && tsc && electron-builder build --linux --publish never",
+    "publish": "npm run publish:win && npm run publish:mac && npm run publish:linux",
+    "publish:win": "rollup -c && tsc && electron-builder build --win --publish always",
+    "publish:mac": "rollup -c && tsc && electron-builder build --mac --publish always",
+    "publish:linux": "rollup -c && tsc && electron-builder build --linux --publish always"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.1",
@@ -20,6 +29,7 @@
     "@rollup/plugin-typescript": "^8.3.0",
     "@tsconfig/svelte": "^2.0.0",
     "electron": "^15.2.0",
+    "electron-builder": "^22.13.1",
     "nodemon": "^2.0.14",
     "rollup": "^2.58.0",
     "rollup-plugin-css-only": "^3.1.0",
@@ -36,5 +46,60 @@
     "@iota/iota.js": "^1.8.1",
     "electron-reload": "^2.0.0-alpha.1",
     "sirv-cli": "^1.0.0"
+  },
+  "build": {
+    "productName": "IOTA Address Monitor",
+    "appId": "iota-address-monitor",
+    "directories": {
+      "buildResources": "./public",
+      "output": "./out"
+    },
+    "files": [
+      "public/",
+      "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "kraftjs",
+        "repo": "iota-address-monitor"
+      }
+    ],
+    "mac": {
+      "icon": "./public/assets/icon.icns",
+      "category": "public.app-category.finance",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "entitlements": ".public/assets/entitlements.mac.plist",
+      "entitlementsInherit": ".public/assets/entitlements.mac.plist"
+    },
+    "linux": {
+      "icon": "./public/assets/icon256x256.png",
+      "target": [
+        "AppImage"
+      ],
+      "desktop": {
+        "Name": "IOTA Address Monitor",
+        "Comment": "Monitor Bech32 IOTA addresses",
+        "Categories": "Office;Network;Finance"
+      }
+    },
+    "win": {
+      "icon": "./public/assets/icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "installerIcon": "./public/assets/icon.ico",
+      "uninstallerIcon": "./public/assets/icon.ico",
+      "uninstallDisplayName": "IOTA Address Monitor",
+      "license": "license.txt",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
+    }
   }
 }

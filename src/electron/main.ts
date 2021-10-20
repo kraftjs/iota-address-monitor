@@ -2,14 +2,14 @@ import path from 'path';
 
 import { app, BrowserWindow } from 'electron';
 
-require('electron-reload')(__dirname);
-
 const debug = /--debug/.test(process.argv[3]);
+
+if (debug) require('electron-reload')(__dirname);
 
 let window: BrowserWindow;
 
 function createWindow() {
-    const windowOptions = {
+    window = new BrowserWindow({
         width: 1080,
         minWidth: 680,
         height: 840,
@@ -19,11 +19,14 @@ function createWindow() {
             contextIsolation: true,
             webviewTag: false,
             enableWebSQL: false,
+            sandbox: true,
         },
-    };
-
-    window = new BrowserWindow(windowOptions);
+    });
     window.loadFile(path.join(__dirname, '..', 'index.html'));
+
+    if (process.platform === 'linux') {
+        window.setIcon(path.join(__dirname, '..', 'assets', 'icon256x256.png'));
+    }
 
     if (debug) {
         window.webContents.openDevTools();
