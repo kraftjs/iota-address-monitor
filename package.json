@@ -4,7 +4,7 @@
   "description": "Electron application to monitor IOTA addresses for their latest balances; written in Svelte and Typescript",
   "author": "Jason Kraft",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
   "main": "public/build/main.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "out:win": "rollup -c && tsc && electron-builder build --win --publish never",
     "out:mac": "rollup -c && tsc && electron-builder build --mac --publish never",
     "out:linux": "rollup -c && tsc && electron-builder build --linux --publish never",
-    "publish": "npm run publish:win && npm run publish:mac && npm run publish:linux",
+    "publish": "rollup -c && tsc && electron-builder build -mwl --publish always",
     "publish:win": "rollup -c && tsc && electron-builder build --win --publish always",
     "publish:mac": "rollup -c && tsc && electron-builder build --mac --publish always",
     "publish:linux": "rollup -c && tsc && electron-builder build --linux --publish always"
