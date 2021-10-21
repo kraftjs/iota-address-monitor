@@ -14,6 +14,11 @@
         MainAddresses = 'mainnetAddresses',
     }
 
+    enum NodeEndpoint {
+        Devnet = 'https://api.lb-0.h.chrysalis-devnet.iota.cafe/',
+        Mainnet = 'https://chrysalis-nodes.iota.cafe/',
+    }
+
     let currentNetwork: NetworkType = JSON.parse(window.localStorage.getItem(LocalStorage.SavedNetwork) || '"devnet"');
     let currentStorageKey: LocalStorage.DevAddresses | LocalStorage.MainAddresses;
     let addresses: Array<string> = [];
