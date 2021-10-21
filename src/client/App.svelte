@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
+    import { Bech32Helper } from '@iota/iota.js';
+
     enum NetworkOptions {
         Devnet = 'devnet',
         Mainnet = 'mainnet',
@@ -33,13 +35,27 @@
         );
     }
 
+    function isValidBech32(address: string): boolean {
+        try {
+            const humanReadablePart =
+                network === NetworkOptions.Devnet
+                    ? Bech32Helper.BECH32_DEFAULT_HRP_DEV
+                    : Bech32Helper.BECH32_DEFAULT_HRP_MAIN;
+            return !!Bech32Helper.fromBech32(address, humanReadablePart);
+        } catch (e) {
+            return false;
+        }
+    }
+
     function handleSubmit() {
-        addresses = [...addresses, address];
-        window.localStorage.setItem(
-            network === NetworkOptions.Devnet ? StorageKeys.DevnetAddresses : StorageKeys.MainnetAddresses,
-            JSON.stringify(addresses),
-        );
-        address = '';
+        if (isValidBech32(address) && !addresses.includes(address)) {
+            addresses = [...addresses, address];
+            window.localStorage.setItem(
+                network === NetworkOptions.Devnet ? StorageKeys.DevnetAddresses : StorageKeys.MainnetAddresses,
+                JSON.stringify(addresses),
+            );
+            address = '';
+        }
     }
 </script>
 
