@@ -57,6 +57,15 @@
             address = '';
         }
     }
+
+    function handleDelete(addressToRemove: String) {
+        console.log(`handleDelete ${addressToRemove}`);
+        addresses = addresses.filter((address) => addressToRemove !== address);
+        window.localStorage.setItem(
+            network === NetworkOptions.Devnet ? StorageKeys.DevnetAddresses : StorageKeys.MainnetAddresses,
+            JSON.stringify(addresses),
+        );
+    }
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
@@ -76,8 +85,8 @@
     <button type="submit">Add</button>
 </form>
 <ul>
-    {#each addresses as address}
-        <li>{address}</li>
+    {#each addresses as address (address)}
+        <li><button type="button" on:click={() => handleDelete(address)}>Delete</button>{address}</li>
     {/each}
 </ul>
 
