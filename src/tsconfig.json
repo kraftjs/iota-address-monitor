@@ -3,5 +3,6 @@
   "compilerOptions": {
     "target": "es2020",
   },
-  "lib": ["es2020", "dom"]
+  "lib": ["es2020", "dom"],
+  "exclude": ["electron"]
 }

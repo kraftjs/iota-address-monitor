@@ -2,27 +2,7 @@
     import { onMount } from 'svelte';
 
     import { Bech32Helper, SingleNodeClient } from '@iota/iota.js';
-
-    enum NetworkType {
-        Dev = 'devnet',
-        Main = 'mainnet',
-    }
-
-    enum LocalStorage {
-        SavedNetwork = 'selectedNetwork',
-        DevAddresses = 'devnetAddresses',
-        MainAddresses = 'mainnetAddresses',
-    }
-
-    enum NodeEndpoint {
-        Devnet = 'https://api.lb-0.h.chrysalis-devnet.iota.cafe/',
-        Mainnet = 'https://chrysalis-nodes.iota.cafe/',
-    }
-
-    interface Address {
-        address: string;
-        balance: number;
-    }
+    import { Address, LocalStorage, NetworkType, NodeEndpoint } from '../shared/typings';
 
     let currentNetwork: NetworkType = JSON.parse(window.localStorage.getItem(LocalStorage.SavedNetwork) || '"devnet"');
     let currentStorageKey: LocalStorage.DevAddresses | LocalStorage.MainAddresses;
