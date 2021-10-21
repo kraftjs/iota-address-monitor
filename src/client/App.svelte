@@ -6,29 +6,37 @@
         Mainnet = 'mainnet',
     }
 
-    let network: NetworkOptions = JSON.parse(window.localStorage.getItem('preferredNetwork') || '"devnet"');
+    enum StorageKeys {
+        Network = 'preferredNetwork',
+        DevnetAddresses = 'devnetAddresses',
+        MainnetAddresses = 'mainnetAddresses',
+    }
+
+    let network: NetworkOptions = JSON.parse(window.localStorage.getItem(StorageKeys.Network) || '"devnet"');
     let addresses: Array<string> = [];
     let address = '';
 
     onMount(() => {
         addresses = JSON.parse(
-            window.localStorage.getItem(network === NetworkOptions.Devnet ? 'devnetAddresses' : 'mainnetAddresses') ||
-                '[]',
+            window.localStorage.getItem(
+                network === NetworkOptions.Devnet ? StorageKeys.DevnetAddresses : StorageKeys.MainnetAddresses,
+            ) || '[]',
         );
     });
 
     $: {
-        window.localStorage.setItem('preferredNetwork', JSON.stringify(network));
+        window.localStorage.setItem(StorageKeys.Network, JSON.stringify(network));
         addresses = JSON.parse(
-            window.localStorage.getItem(network === NetworkOptions.Devnet ? 'devnetAddresses' : 'mainnetAddresses') ||
-                '[]',
+            window.localStorage.getItem(
+                network === NetworkOptions.Devnet ? StorageKeys.DevnetAddresses : StorageKeys.MainnetAddresses,
+            ) || '[]',
         );
     }
 
     function handleSubmit() {
         addresses = [...addresses, address];
         window.localStorage.setItem(
-            network === NetworkOptions.Devnet ? 'devnetAddresses' : 'mainnetAddresses',
+            network === NetworkOptions.Devnet ? StorageKeys.DevnetAddresses : StorageKeys.MainnetAddresses,
             JSON.stringify(addresses),
         );
         address = '';
