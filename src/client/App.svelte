@@ -14,31 +14,25 @@
         MainAddresses = 'mainnetAddresses',
     }
 
-    let network: NetworkType = JSON.parse(window.localStorage.getItem(LocalStorage.SavedNetwork) || '"devnet"');
+    let currentNetwork: NetworkType = JSON.parse(window.localStorage.getItem(LocalStorage.SavedNetwork) || '"devnet"');
+    let currentStorageKey: LocalStorage.DevAddresses | LocalStorage.MainAddresses;
     let addresses: Array<string> = [];
     let address = '';
 
     onMount(() => {
-        addresses = JSON.parse(
-            window.localStorage.getItem(
-                network === NetworkType.Dev ? LocalStorage.DevAddresses : LocalStorage.MainAddresses,
-            ) || '[]',
-        );
+        addresses = JSON.parse(window.localStorage.getItem(currentStorageKey) || '[]');
     });
 
     $: {
-        window.localStorage.setItem(LocalStorage.SavedNetwork, JSON.stringify(network));
-        addresses = JSON.parse(
-            window.localStorage.getItem(
-                network === NetworkType.Dev ? LocalStorage.DevAddresses : LocalStorage.MainAddresses,
-            ) || '[]',
-        );
+        window.localStorage.setItem(LocalStorage.SavedNetwork, JSON.stringify(currentNetwork));
+        currentStorageKey = currentNetwork === NetworkType.Dev ? LocalStorage.DevAddresses : LocalStorage.MainAddresses;
+        addresses = JSON.parse(window.localStorage.getItem(currentStorageKey) || '[]');
     }
 
     function isValidBech32(address: string): boolean {
         try {
             const humanReadablePart =
-                network === NetworkType.Dev
+                currentNetwork === NetworkType.Dev
                     ? Bech32Helper.BECH32_DEFAULT_HRP_DEV
                     : Bech32Helper.BECH32_DEFAULT_HRP_MAIN;
             return !!Bech32Helper.fromBech32(address, humanReadablePart);
@@ -50,10 +44,7 @@
     function handleSubmit() {
         if (isValidBech32(address) && !addresses.includes(address)) {
             addresses = [...addresses, address];
-            window.localStorage.setItem(
-                network === NetworkType.Dev ? LocalStorage.DevAddresses : LocalStorage.MainAddresses,
-                JSON.stringify(addresses),
-            );
+            window.localStorage.setItem(currentStorageKey, JSON.stringify(addresses));
             address = '';
         }
     }
@@ -61,10 +52,7 @@
     function handleDelete(addressToRemove: String) {
         console.log(`handleDelete ${addressToRemove}`);
         addresses = addresses.filter((address) => addressToRemove !== address);
-        window.localStorage.setItem(
-            network === NetworkType.Dev ? LocalStorage.DevAddresses : LocalStorage.MainAddresses,
-            JSON.stringify(addresses),
-        );
+        window.localStorage.setItem(currentStorageKey, JSON.stringify(addresses));
     }
 </script>
 
@@ -72,12 +60,12 @@
     <p>Please select which network to monitor:</p>
     <div>
         <label>
-            <input type="radio" bind:group={network} name="network" value={NetworkType.Dev} />
+            <input type="radio" bind:group={currentNetwork} name="network" value={NetworkType.Dev} />
             devnet
         </label>
 
         <label>
-            <input type="radio" bind:group={network} name="network" value={NetworkType.Main} />
+            <input type="radio" bind:group={currentNetwork} name="network" value={NetworkType.Main} />
             mainnet
         </label>
     </div>
