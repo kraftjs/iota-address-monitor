@@ -15,6 +15,6 @@ export enum NodeEndpoint {
 }
 
 export interface Address {
-    address: string;
+    bech32Address: string;
     balance: number;
 }

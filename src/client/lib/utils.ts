@@ -16,10 +16,10 @@ export function isValidBech32(address: string, network: NetworkType): boolean {
     }
 }
 
-async function retrieveBalance(address: string, network: NetworkType): Promise<Address> {
-    const addressInfo = await client[network].address(address);
+async function retrieveBalance(bech32Address: string, network: NetworkType): Promise<Address> {
+    const addressInfo = await client[network].address(bech32Address);
     return {
-        address,
+        bech32Address,
         balance: addressInfo.balance,
     };
 }
