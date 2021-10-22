@@ -1,40 +1,39 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-
-    import { isValidBech32, retrieveBalances } from './lib/utils';
-    import { Address, LocalStorage, NetworkType } from './lib/typings';
+    import { devnetBechAddresses, mainnetBechAddresses } from './stores/localStorage';
+    import { devnetAddressData, mainnetAddressData } from './stores/addressData';
+    import { Address, LocalStorage, NetworkType } from './lib/types';
+    import { isValidBech32 } from './lib/utils';
 
     let currentNetwork: NetworkType = JSON.parse(window.localStorage.getItem(LocalStorage.SavedNetwork) || '"devnet"');
-    let currentStorageKey: LocalStorage.DevAddresses | LocalStorage.MainAddresses;
-    let addresses: Array<string> = [];
-    let addressObjectList: Array<Address> = [];
+    let addressDataToShow: Address[];
     let address = '';
 
-    onMount(async () => {
-        addresses = JSON.parse(window.localStorage.getItem(currentStorageKey) || '[]');
-        addressObjectList = await retrieveBalances(addresses, currentNetwork);
-    });
-
-    $: {
-        window.localStorage.setItem(LocalStorage.SavedNetwork, JSON.stringify(currentNetwork));
-        currentStorageKey = currentNetwork === NetworkType.Dev ? LocalStorage.DevAddresses : LocalStorage.MainAddresses;
-        addresses = JSON.parse(window.localStorage.getItem(currentStorageKey) || '[]');
-    }
-
-    $: (async () => (addressObjectList = await retrieveBalances(addresses, currentNetwork)))();
+    $: addressDataToShow = currentNetwork === NetworkType.Main ? $mainnetAddressData : $devnetAddressData;
+    $: window.localStorage.setItem(LocalStorage.DevAddresses, JSON.stringify($devnetBechAddresses));
+    $: window.localStorage.setItem(LocalStorage.MainAddresses, JSON.stringify($mainnetBechAddresses));
+    $: window.localStorage.setItem(LocalStorage.SavedNetwork, JSON.stringify(currentNetwork));
 
     function handleSubmit() {
-        if (isValidBech32(address, currentNetwork) && !addresses.includes(address)) {
-            addresses = [...addresses, address];
-            window.localStorage.setItem(currentStorageKey, JSON.stringify(addresses));
-            address = '';
+        if (isValidBech32(address, currentNetwork)) {
+            if (currentNetwork === NetworkType.Main && !$mainnetBechAddresses.includes(address)) {
+                $mainnetBechAddresses = [...$mainnetBechAddresses, address];
+                address = '';
+            } else if (currentNetwork === NetworkType.Dev && !$devnetBechAddresses.includes(address)) {
+                $devnetBechAddresses = [...$devnetBechAddresses, address];
+                address = '';
+            } else if ($devnetBechAddresses.includes(address) || $mainnetBechAddresses.includes(address)) {
+                console.log(`${address} already present`);
+            }
         }
     }
 
     function handleDelete(addressToRemove: String) {
         console.log(`handleDelete ${addressToRemove}`);
-        addresses = addresses.filter((address) => addressToRemove !== address);
-        window.localStorage.setItem(currentStorageKey, JSON.stringify(addresses));
+        if (currentNetwork === NetworkType.Main) {
+            $mainnetBechAddresses = $mainnetBechAddresses.filter((address) => addressToRemove !== address);
+        } else {
+            $devnetBechAddresses = $devnetBechAddresses.filter((address) => addressToRemove !== address);
+        }
     }
 </script>
 
@@ -55,7 +54,7 @@
     <button type="submit">Add</button>
 </form>
 <ul>
-    {#each addressObjectList as { address, balance } (address)}
+    {#each addressDataToShow as { address, balance } (address)}
         <li><button type="button" on:click={() => handleDelete(address)}>Delete</button>{address}{balance}</li>
     {/each}
 </ul>
