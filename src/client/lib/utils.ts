@@ -1,5 +1,5 @@
 import { Bech32Helper, SingleNodeClient } from '@iota/iota.js';
-import { Address, NetworkType, NodeEndpoint } from './typings';
+import { Address, NetworkType, NodeEndpoint } from './types';
 
 const client = {
     devnet: new SingleNodeClient(NodeEndpoint.Devnet),
