@@ -5,10 +5,15 @@
     import { isValidBech32 } from './lib/utils';
 
     let currentNetwork: NetworkType = JSON.parse(window.localStorage.getItem(LocalStorage.SavedNetwork) || '"devnet"');
-    let addressDataToShow: Address[];
     let address = '';
+    let search = '';
 
     $: addressDataToShow = currentNetwork === NetworkType.Main ? $mainnetAddressData : $devnetAddressData;
+    $: filteredData = search
+        ? addressDataToShow.filter(({ address, balance }: Address) => {
+              return address.includes(search) || balance.toString().includes(search);
+          })
+        : addressDataToShow;
     $: window.localStorage.setItem(LocalStorage.DevAddresses, JSON.stringify($devnetBechAddresses));
     $: window.localStorage.setItem(LocalStorage.MainAddresses, JSON.stringify($mainnetBechAddresses));
     $: window.localStorage.setItem(LocalStorage.SavedNetwork, JSON.stringify(currentNetwork));
@@ -37,6 +42,8 @@
     }
 </script>
 
+<input type="search" placeholder="search address or balance" bind:value={search} />
+
 <form on:submit|preventDefault={handleSubmit}>
     <p>Please select which network to monitor:</p>
     <div>
@@ -54,7 +61,7 @@
     <button type="submit">Add</button>
 </form>
 <ul>
-    {#each addressDataToShow as { address, balance } (address)}
+    {#each filteredData as { address, balance } (address)}
         <li><button type="button" on:click={() => handleDelete(address)}>Delete</button>{address}{balance}</li>
     {/each}
 </ul>
