@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
-    import { isValidBech32, retrieveBalances } from '../shared/utils';
-    import { Address, LocalStorage, NetworkType } from '../shared/typings';
+    import { isValidBech32, retrieveBalances } from './lib/utils';
+    import { Address, LocalStorage, NetworkType } from './lib/typings';
 
     let currentNetwork: NetworkType = JSON.parse(window.localStorage.getItem(LocalStorage.SavedNetwork) || '"devnet"');
     let currentStorageKey: LocalStorage.DevAddresses | LocalStorage.MainAddresses;
