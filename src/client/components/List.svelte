@@ -1,33 +1,28 @@
 <script lang="ts">
-    import { Address, NetworkType } from '../lib/types';
-    import { devnetAddressData, mainnetAddressData } from '../stores/addressData';
-    import { devnetBechAddresses, mainnetBechAddresses } from '../stores/localStorage';
+    import { addressInfo } from '../stores/addressInfo';
+    import { currentNetwork } from '../stores/currentNetwork';
+    import type { Address } from '../lib/types';
 
-    export let currentNetwork;
     let search = '';
 
-    $: addressDataToShow = currentNetwork === NetworkType.Main ? $mainnetAddressData : $devnetAddressData;
+    $: addressDataToShow = $addressInfo[$currentNetwork];
     $: filteredData = search
-        ? addressDataToShow.filter(({ bech32Address, balance }: Address) => {
-              return bech32Address.includes(search) || balance.toString().includes(search);
+        ? addressDataToShow.filter(({ bechAddress, balance }: Address) => {
+              return bechAddress.includes(search) || balance.toString().includes(search);
           })
         : addressDataToShow;
 
     function handleDelete(addressToRemove: String) {
         console.log(`handleDelete ${addressToRemove}`);
-        if (currentNetwork === NetworkType.Main) {
-            $mainnetBechAddresses = $mainnetBechAddresses.filter((address) => addressToRemove !== address);
-        } else {
-            $devnetBechAddresses = $devnetBechAddresses.filter((address) => addressToRemove !== address);
-        }
+        addressInfo.remove($currentNetwork, addressToRemove);
     }
 </script>
 
 <input type="search" placeholder="search address or balance" bind:value={search} />
 <ul>
-    {#each filteredData as { bech32Address, balance } (bech32Address)}
+    {#each filteredData as { bechAddress, balance } (bechAddress)}
         <li>
-            <button type="button" on:click={() => handleDelete(bech32Address)}>Delete</button>{bech32Address}{balance}
+            <button type="button" on:click={() => handleDelete(bechAddress)}>Delete</button>{bechAddress}{balance}
         </li>
     {/each}
 </ul>

@@ -1,5 +1,5 @@
 import { Bech32Helper, SingleNodeClient } from '@iota/iota.js';
-import { Address, NetworkType, NodeEndpoint } from './types';
+import { NetworkType, NodeEndpoint } from './types';
 
 const client = {
     devnet: new SingleNodeClient(NodeEndpoint.Devnet),
@@ -16,14 +16,7 @@ export function isValidBech32(address: string, network: NetworkType): boolean {
     }
 }
 
-async function retrieveBalance(bech32Address: string, network: NetworkType): Promise<Address> {
+export async function retrieveBalance(bech32Address: string, network: NetworkType): Promise<number> {
     const addressInfo = await client[network].address(bech32Address);
-    return {
-        bech32Address,
-        balance: addressInfo.balance,
-    };
-}
-
-export async function retrieveBalances(addresses: string[], network: NetworkType): Promise<Address[]> {
-    return Promise.all(addresses.map((address) => retrieveBalance(address, network)));
+    return addressInfo.balance;
 }
