@@ -20,9 +20,16 @@
 
 <input type="search" placeholder="search address or balance" bind:value={search} />
 <ul>
-    {#each filteredData as { bechAddress, balance } (bechAddress)}
+    {#each filteredData as { bechAddress, balance: promise } (bechAddress)}
         <li>
-            <button type="button" on:click={() => handleDelete(bechAddress)}>Delete</button>{bechAddress}{balance}
+            {#await promise}
+                <button type="button" on:click={() => handleDelete(bechAddress)}>Delete</button>{bechAddress}...loading
+            {:then balance}
+                <button type="button" on:click={() => handleDelete(bechAddress)}>Delete</button>{bechAddress}{balance}
+            {:catch error}
+                <button type="button" on:click={() => handleDelete(bechAddress)}>Delete</button
+                >{bechAddress}{error.message}
+            {/await}
         </li>
     {/each}
 </ul>
