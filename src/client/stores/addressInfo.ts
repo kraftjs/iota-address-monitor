@@ -1,16 +1,11 @@
 import { writable } from 'svelte/store';
-import { LocalStorage } from '../lib/types';
-import type { Address, NetworkType } from '../lib/types';
+import type { Address } from '../lib/types';
+import { LocalStorageKey, NetworkType } from '../lib/types';
 import { retrieveBalance } from '../lib/utils';
 
-function initializeAddressInfo(storageKey: LocalStorage): Address[] {
-    const bechAddresses: string[] = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
-    return bechAddresses.map((bechAddress) => ({ bechAddress, balance: 0 }));
-}
-
 const { subscribe, set, update } = writable<{ devnet: Address[]; mainnet: Address[] }>({
-    devnet: initializeAddressInfo(LocalStorage.DevAddresses),
-    mainnet: initializeAddressInfo(LocalStorage.MainAddresses),
+    devnet: loadFromLocalStorage(LocalStorageKey.Devnet),
+    mainnet: loadFromLocalStorage(LocalStorageKey.Mainnet),
 });
 
 export const addressInfo = {
@@ -29,7 +24,35 @@ export const addressInfo = {
             return self;
         });
     },
-    connect: async () => (n) => n,
+    initialize: async () => {
+        const devnetAddressInfo = await name(NetworkType.Dev, LocalStorageKey.Devnet);
+        const mainnetAddressInfo = await name(NetworkType.Main, LocalStorageKey.Mainnet);
+        update((self) => {
+            self.devnet = devnetAddressInfo;
+            self.mainnet = mainnetAddressInfo;
+            return self;
+        });
+        new Promise<void>(function (resolve) {
+            setTimeout(() => resolve(), 1000);
+        });
+    },
     set,
     update,
 };
+
+function loadFromLocalStorage(storageKey: LocalStorageKey): Address[] {
+    const bechAddresses: string[] = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
+    return bechAddresses.map((bechAddress) => ({ bechAddress, balance: 0 }));
+}
+
+async function name(network: NetworkType, storageKey: LocalStorageKey): Promise<Address[]> {
+    return Promise.all(
+        loadFromLocalStorage(storageKey).map(async ({ bechAddress, balance }: Address) => {
+            balance = await retrieveBalance(bechAddress, network);
+            return {
+                bechAddress,
+                balance,
+            };
+        }),
+    );
+}

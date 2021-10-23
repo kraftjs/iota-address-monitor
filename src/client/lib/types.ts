@@ -3,10 +3,10 @@ export enum NetworkType {
     Main = 'mainnet',
 }
 
-export enum LocalStorage {
-    SavedNetwork = 'selectedNetwork',
-    DevAddresses = 'devnetAddresses',
-    MainAddresses = 'mainnetAddresses',
+export enum LocalStorageKey {
+    Network = 'selectedNetwork',
+    Devnet = 'devnetAddresses',
+    Mainnet = 'mainnetAddresses',
 }
 
 export enum NodeEndpoint {
