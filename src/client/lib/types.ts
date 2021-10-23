@@ -16,5 +16,5 @@ export enum NodeEndpoint {
 
 export interface Address {
     bechAddress: string;
-    balance: number;
+    balance: Promise<number> | number;
 }

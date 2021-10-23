@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import { LocalStorage } from '../lib/types';
 import type { Address, NetworkType } from '../lib/types';
+import { retrieveBalance } from '../lib/utils';
 
 function initializeAddressInfo(storageKey: LocalStorage): Address[] {
     const bechAddresses: string[] = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
@@ -20,12 +21,14 @@ export const addressInfo = {
             // mqttUnsubscribe()
             return self;
         }),
-    add: (network: NetworkType, newAddress: string) =>
+    add: async (network: NetworkType, newAddress: string) => {
+        const newAddressBalancePromise: Promise<number> = retrieveBalance(newAddress, network);
         update((self) => {
-            self[network] = [...self[network], { bechAddress: newAddress, balance: 0 }];
+            self[network] = [...self[network], { bechAddress: newAddress, balance: newAddressBalancePromise }];
             // mqttSubscribe()
             return self;
-        }),
+        });
+    },
     connect: async () => (n) => n,
     set,
     update,
