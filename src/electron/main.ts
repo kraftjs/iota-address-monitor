@@ -1,6 +1,7 @@
 import path from 'path';
 
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { mqttSubscribe, mqttUnsubscribe, mqttUnsubscribeAll } from './mqtt';
 
 const debug = /--debug/.test(process.argv[3]);
 
@@ -16,6 +17,7 @@ function createWindow() {
         height: 840,
         title: app.getName(),
         webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
             contextIsolation: true,
             webviewTag: false,
@@ -31,7 +33,6 @@ function createWindow() {
 
     if (debug) {
         window.webContents.openDevTools();
-        // window.maximize();
     }
 
     window.once('ready-to-show', () => {
@@ -45,11 +46,11 @@ if (!isFirstInstance) {
     app.quit();
 }
 
-app.on('ready', () => {
-    createWindow();
-});
+app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
+    mqttUnsubscribeAll();
+
     if (process.platform !== 'darwin') {
         app.quit();
     }
@@ -70,4 +71,16 @@ app.on('second-instance', () => {
         }
         window.focus();
     }
+});
+
+ipcMain.on('subscribe', (event, [network, bechAddress]) => {
+    console.log(`Subscribing to ${bechAddress} on ${network} network.`);
+    mqttSubscribe(network, bechAddress, () => {
+        window.webContents.send('activityOnAddress', bechAddress);
+    });
+});
+
+ipcMain.on('unsubscribe', (event, [network, bechAddress]) => {
+    console.log(`Unsubscribing from ${bechAddress} on ${network} network.`);
+    mqttUnsubscribe(network, bechAddress);
 });

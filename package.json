@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@iota/iota.js": "^1.8.1",
+    "@iota/mqtt.js": "^1.8.2",
     "electron-reload": "^2.0.0-alpha.1",
     "sirv-cli": "^1.0.0"
   },
