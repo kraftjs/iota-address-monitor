@@ -11,7 +11,7 @@ export enum LocalStorageKey {
 
 export enum NodeEndpoint {
     Devnet = 'https://api.lb-0.h.chrysalis-devnet.iota.cafe/',
-    Mainnet = 'https://chrysalis-nodes.iota.cafe/',
+    Mainnet = 'https://chrysalis-nodes.iota.org/',
 }
 
 export interface Address {
