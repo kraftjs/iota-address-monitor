@@ -1,3 +1,4 @@
+<!--suppress CssUnknownTarget -->
 <script lang="ts">
     import { onMount } from 'svelte';
 
@@ -7,6 +8,7 @@
     import { currentNetwork, currentUnit } from './stores/currentNetwork';
     import { LocalStorageKey, NetworkType } from './lib/types';
     import type { Address } from './lib/types';
+    import svg from './IOTA.svg';
 
     let promise: Promise<void>;
 
@@ -29,7 +31,10 @@
 </script>
 
 <div class="container">
-    <Form />
+    <header>
+        <img src={svg} alt="Powered By IOTA logo" />
+        <Form />
+    </header>
     {#await promise}
         <h1>...RETRIEVING BALANCES</h1>
     {:then _}
@@ -40,6 +45,10 @@
 </div>
 
 <style>
+    header {
+        /* @ts-ignore */
+        background: #00e0ca;
+    }
     .container {
         max-width: 1060px;
         width: 1060px;

@@ -6,6 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import svg from 'rollup-plugin-svg';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -46,6 +47,9 @@ export default {
             },
         }),
         css({ output: 'bundle.css' }),
+        svg({
+            base64: true,
+        }),
         resolve({
             browser: true,
             dedupe: ['svelte'],
