@@ -30,13 +30,16 @@
 
 <svelte:window on:click={handleWindowClick} />
 <div class="list-container">
-    <input
-        type="search"
-        placeholder="search address or balance"
-        bind:value={search}
-        disabled={!addressDataToShow.length}
-    />
-    <button type="button" on:click={() => handleDelete(selected)} disabled={!selected}>delete</button>
+    <div class="container">
+        <input
+            type="search"
+            maxlength="64"
+            placeholder="search address or balance"
+            bind:value={search}
+            disabled={!addressDataToShow.length}
+        />
+        <button type="button" on:click={() => handleDelete(selected)} disabled={!selected}>delete</button>
+    </div>
     <ul>
         {#each filteredData as addressData (addressData.bechAddress)}
             <Card {...addressData} bind:selected />
@@ -45,16 +48,31 @@
 </div>
 
 <style>
-    input {
-        padding: 0.25em 0.5em;
-    }
-
-    button {
-        padding: 0.25em 0.5em;
-    }
-
     ul {
         padding: 0;
         list-style-type: none;
+    }
+
+    button {
+        padding: 0.5em 1em;
+        margin: 0 0.25em;
+    }
+
+    input[type='search'] {
+        margin: 0 0.25em;
+        padding: 0.5em 1em;
+        width: 520px;
+        font-family: monospace;
+        font-size: 0.9375em;
+    }
+
+    .list-container {
+        margin-top: 0.5em;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        padding: 0 5em;
     }
 </style>

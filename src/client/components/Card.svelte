@@ -39,10 +39,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 8em 0 4em;
+        padding: 1em 5rem;
         font-family: monospace;
         font-size: 0.875rem;
         background-color: #f2f5fb;
+        margin: 1em 0;
     }
 
     p {

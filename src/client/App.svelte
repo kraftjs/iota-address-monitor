@@ -36,7 +36,7 @@
         <Form />
     </header>
     {#await promise}
-        <h1>...RETRIEVING BALANCES</h1>
+        <div style="display: grid; justify-content: center"><h1>...RETRIEVING BALANCES</h1></div>
     {:then _}
         <List />
     {:catch error}
@@ -46,11 +46,17 @@
 
 <style>
     header {
-        /* @ts-ignore */
-        background: #00e0ca;
+        height: 360px;
+        width: 100%;
+    }
+    img {
+        display: block;
+        max-height: 90%;
+        margin: auto;
     }
     .container {
         max-width: 1060px;
+        min-width: 1000px;
         width: 1060px;
     }
 </style>

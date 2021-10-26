@@ -13,10 +13,8 @@
                 console.log(`${address} already present`);
             } else {
                 addressInfo.addAddress($currentNetwork, address);
-                address = '';
             }
-        } else {
-            console.log('Invalid Bech32Address');
+            address = '';
         }
     }
 </script>
@@ -35,17 +33,34 @@
     </div>
     <input
         type="text"
+        spellcheck="false"
+        maxlength="64"
         placeholder={`Enter address (${$currentNetwork === 'mainnet' ? 'iota1' : 'atoi1'}...)`}
         bind:value={address}
     />
-    <button type="submit">Add</button>
+    <button type="submit" disabled={!isValidBech32(address, $currentNetwork)}>add</button>
     <button type="button" on:click={() => window.api.send('refresh', null)}>&#8635;</button>
 </form>
 
 <style>
+    form {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 0.5em;
+    }
+
+    input[type='text'] {
+        padding: 0.5em 1em;
+        width: 500px;
+        font-family: monospace;
+        font-size: 0.9375em;
+        margin: 0 0.25em;
+    }
+
     .switch-container {
         display: inline-flex;
         overflow: hidden;
+        margin: 0 0.25em;
     }
 
     .switch-container label input {
@@ -84,5 +99,10 @@
 
     input {
         padding: 0.25em 0.5em;
+    }
+
+    button {
+        padding: 0.25em 0.5em;
+        margin: 0 0.25em;
     }
 </style>
