@@ -23,22 +23,63 @@
 
 <form on:submit|preventDefault={handleSubmit}>
     <p>Please select which network to monitor:</p>
-    <div>
-        <label>
-            <input type="radio" bind:group={$currentNetwork} name="network" value={NetworkType.Dev} />
-            devnet
-        </label>
+    <div class="switch-container">
+        <label class:checked={$currentNetwork === NetworkType.Dev}
+            ><input type="radio" bind:group={$currentNetwork} name="network" value={NetworkType.Dev} />
+            devnet</label
+        >
 
-        <label>
+        <label class:checked={$currentNetwork === NetworkType.Main}>
             <input type="radio" bind:group={$currentNetwork} name="network" value={NetworkType.Main} />
-            mainnet
-        </label>
+            mainnet</label
+        >
     </div>
     <input type="text" placeholder="Enter address" bind:value={address} />
     <button type="submit">Add</button>
 </form>
 
 <style>
+    .switch-container {
+        display: flex;
+        margin-bottom: 2.25em;
+        overflow: hidden;
+    }
+
+    .switch-container label input {
+        position: absolute;
+        clip: rect(0, 0, 0, 0);
+        height: 1px;
+        width: 1px;
+        border: 0;
+        overflow: hidden;
+    }
+
+    .switch-container label {
+        background-color: #e4e4e4;
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 0.875em;
+        line-height: 1;
+        text-align: center;
+        padding: 0.5em 1em;
+        margin-right: -1px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+        transition: all 0.1s ease-in-out;
+    }
+
+    .switch-container label.checked {
+        background-color: #a5dc86;
+        box-shadow: none;
+    }
+
+    .switch-container label:first-of-type {
+        border-radius: 0.25em 0 0 0.25em;
+    }
+
+    .switch-container label:last-of-type {
+        border-radius: 0 0.25em 0.25em 0;
+    }
+
     input {
         padding: 0.25em 0.5em;
     }
