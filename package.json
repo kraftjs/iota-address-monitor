@@ -4,7 +4,7 @@
   "description": "Electron application to monitor IOTA addresses for their latest balances; written in Svelte and Typescript",
   "author": "Jason Kraft",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "main": "public/build/main.js",
   "scripts": {
