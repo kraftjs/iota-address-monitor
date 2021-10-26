@@ -1,9 +1,11 @@
 <script lang="ts">
+    import Card from './Card.svelte';
     import { addressInfo } from '../stores/addressInfo';
     import { currentNetwork } from '../stores/currentNetwork';
     import type { Address } from '../lib/types';
 
     let search = '';
+    let selected = null;
 
     $: addressDataToShow = $addressInfo[$currentNetwork];
     $: filteredData = search
@@ -11,28 +13,36 @@
               return bechAddress.includes(search) || balance.toString().includes(search);
           })
         : addressDataToShow;
+    $: if ($currentNetwork) selected = null;
 
-    function handleDelete(addressToRemove: String) {
+    function handleDelete(addressToRemove: string) {
         console.log(`handleDelete ${addressToRemove}`);
         addressInfo.removeAddress($currentNetwork, addressToRemove);
+        selected = null;
+    }
+
+    function handleWindowClick(event) {
+        if (!event.target.closest('.list-container')) {
+            selected = null;
+        }
     }
 </script>
 
-<input type="search" placeholder="search address or balance" bind:value={search} />
-<ul>
-    {#each filteredData as { bechAddress, balance: promise } (bechAddress)}
-        <li>
-            {#await promise}
-                <button type="button" on:click={() => handleDelete(bechAddress)}>Delete</button>{bechAddress}...loading
-            {:then balance}
-                <button type="button" on:click={() => handleDelete(bechAddress)}>Delete</button>{bechAddress}{balance}
-            {:catch error}
-                <button type="button" on:click={() => handleDelete(bechAddress)}>Delete</button
-                >{bechAddress}{error.message}
-            {/await}
-        </li>
-    {/each}
-</ul>
+<svelte:window on:click={handleWindowClick} />
+<div class="list-container" style="background-color: pink;">
+    <input
+        type="search"
+        placeholder="search address or balance"
+        bind:value={search}
+        disabled={!addressDataToShow.length}
+    />
+    <button type="button" on:click={() => handleDelete(selected)} disabled={!selected}>delete</button>
+    <ul>
+        {#each filteredData as addressData (addressData.bechAddress)}
+            <Card {...addressData} bind:selected />
+        {/each}
+    </ul>
+</div>
 
 <style>
     input {
@@ -41,5 +51,10 @@
 
     button {
         padding: 0.25em 0.5em;
+    }
+
+    ul {
+        list-style-type: none;
+        background-color: aquamarine;
     }
 </style>
