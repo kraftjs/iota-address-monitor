@@ -81,3 +81,7 @@ ipcMain.on('subscribe', (event, [network, bechAddress]) => {
 ipcMain.on('unsubscribe', (event, [network, bechAddress]) => {
     mqttUnsubscribe(network, bechAddress);
 });
+
+ipcMain.on('refresh', () => {
+    window.webContents.reload();
+});

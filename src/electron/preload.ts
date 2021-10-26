@@ -2,7 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('api', {
     send: (channel: string, data: any) => {
-        let validChannels = ['subscribe', 'unsubscribe'];
+        let validChannels = ['subscribe', 'unsubscribe', 'refresh'];
         if (validChannels.includes(channel)) {
             ipcRenderer.send(channel, data);
         }

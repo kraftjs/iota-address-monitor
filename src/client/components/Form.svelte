@@ -22,7 +22,6 @@
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
-    <p>Please select which network to monitor:</p>
     <div class="switch-container">
         <label class:checked={$currentNetwork === NetworkType.Dev}
             ><input type="radio" bind:group={$currentNetwork} name="network" value={NetworkType.Dev} />
@@ -34,14 +33,18 @@
             mainnet</label
         >
     </div>
-    <input type="text" placeholder="Enter address" bind:value={address} />
+    <input
+        type="text"
+        placeholder={`Enter address (${$currentNetwork === 'mainnet' ? 'iota1' : 'atoi1'}...)`}
+        bind:value={address}
+    />
     <button type="submit">Add</button>
+    <button type="button" on:click={() => window.api.send('refresh', null)}>&#8635;</button>
 </form>
 
 <style>
     .switch-container {
-        display: flex;
-        margin-bottom: 2.25em;
+        display: inline-flex;
         overflow: hidden;
     }
 
