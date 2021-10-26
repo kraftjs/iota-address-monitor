@@ -16,6 +16,7 @@ export enum LocalStorageKey {
     Network = 'selectedNetwork',
     Devnet = 'devnetAddresses',
     Mainnet = 'mainnetAddresses',
+    Unit = 'selectedUnit',
 }
 
 export enum NodeEndpoint {

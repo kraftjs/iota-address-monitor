@@ -29,7 +29,7 @@
 </script>
 
 <svelte:window on:click={handleWindowClick} />
-<div class="list-container" style="background-color: pink;">
+<div class="list-container">
     <input
         type="search"
         placeholder="search address or balance"
@@ -54,7 +54,7 @@
     }
 
     ul {
+        padding: 0;
         list-style-type: none;
-        background-color: aquamarine;
     }
 </style>

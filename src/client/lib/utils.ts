@@ -1,10 +1,17 @@
-import { Bech32Helper, SingleNodeClient } from '@iota/iota.js';
+import { Bech32Helper, SingleNodeClient, UnitsHelper } from '@iota/iota.js';
 import { NetworkType, NodeEndpoint } from './types';
+import type { Units } from '@iota/iota.js';
 
 const client = {
     devnet: new SingleNodeClient(NodeEndpoint.Devnet),
     mainnet: new SingleNodeClient(NodeEndpoint.Mainnet),
 };
+
+export function formatUnit(balance: number, unit: Units) {
+    const formattedString = UnitsHelper.formatUnits(balance, unit, 2);
+    const [formattedNumber, unitSuffix] = formattedString.split(' ');
+    return formattedNumber;
+}
 
 export function isValidBech32(address: string, network: NetworkType): boolean {
     try {

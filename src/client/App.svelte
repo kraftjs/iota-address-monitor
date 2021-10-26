@@ -4,7 +4,7 @@
     import List from './components/List.svelte';
     import Form from './components/Form.svelte';
     import { addressInfo } from './stores/addressInfo';
-    import { currentNetwork } from './stores/currentNetwork';
+    import { currentNetwork, currentUnit } from './stores/currentNetwork';
     import { LocalStorageKey, NetworkType } from './lib/types';
     import type { Address } from './lib/types';
 
@@ -17,6 +17,7 @@
         );
     });
 
+    $: window.localStorage.setItem(LocalStorageKey.Unit, JSON.stringify($currentUnit));
     $: window.localStorage.setItem(LocalStorageKey.Network, JSON.stringify($currentNetwork));
     $: saveBechAddresses($addressInfo[NetworkType.Dev], LocalStorageKey.Devnet);
     $: saveBechAddresses($addressInfo[NetworkType.Main], LocalStorageKey.Mainnet);
@@ -27,11 +28,20 @@
     }
 </script>
 
-<Form />
-{#await promise}
-    <h1>...RETRIEVING BALANCES</h1>
-{:then _}
-    <List />
-{:catch error}
-    <h1>{error.message}</h1>
-{/await}
+<div class="container">
+    <Form />
+    {#await promise}
+        <h1>...RETRIEVING BALANCES</h1>
+    {:then _}
+        <List />
+    {:catch error}
+        <h1>{error.message}</h1>
+    {/await}
+</div>
+
+<style>
+    .container {
+        max-width: 1060px;
+        width: 1060px;
+    }
+</style>

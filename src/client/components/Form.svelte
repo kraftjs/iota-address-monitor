@@ -55,8 +55,7 @@
     }
 
     .switch-container label {
-        background-color: #e4e4e4;
-        color: rgba(0, 0, 0, 0.6);
+        background-color: #f2f5fb;
         font-size: 0.875em;
         line-height: 1;
         text-align: center;
@@ -68,7 +67,7 @@
     }
 
     .switch-container label.checked {
-        background-color: #a5dc86;
+        background-color: #00e0ca;
         box-shadow: none;
     }
 
