@@ -13,14 +13,14 @@ export const addressInfo = {
     remove: (network: NetworkType, addressToRemove: string) =>
         update((self) => {
             self[network] = self[network].filter(({ bechAddress }) => addressToRemove !== bechAddress);
-            // mqttUnsubscribe()
+            window.api.send('unsubscribe', [network, addressToRemove]);
             return self;
         }),
     add: async (network: NetworkType, newAddress: string) => {
-        const newAddressBalancePromise: Promise<number> = retrieveBalance(newAddress, network);
+        const newAddressBalancePromise: Promise<number> = retrieveBalance(network, newAddress);
         update((self) => {
             self[network] = [...self[network], { bechAddress: newAddress, balance: newAddressBalancePromise }];
-            // mqttSubscribe()
+            window.api.send('subscribe', [network, newAddress]);
             return self;
         });
     },
@@ -48,7 +48,8 @@ function loadFromLocalStorage(storageKey: LocalStorageKey): Address[] {
 async function name(network: NetworkType, storageKey: LocalStorageKey): Promise<Address[]> {
     return Promise.all(
         loadFromLocalStorage(storageKey).map(async ({ bechAddress, balance }: Address) => {
-            balance = await retrieveBalance(bechAddress, network);
+            balance = await retrieveBalance(network, bechAddress);
+            window.api.send('subscribe', [network, bechAddress]);
             return {
                 bechAddress,
                 balance,

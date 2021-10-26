@@ -16,7 +16,7 @@ export function isValidBech32(address: string, network: NetworkType): boolean {
     }
 }
 
-export async function retrieveBalance(bech32Address: string, network: NetworkType): Promise<number> {
+export async function retrieveBalance(network: NetworkType, bech32Address: string): Promise<number> {
     const addressInfo = await client[network].address(bech32Address);
     return addressInfo.balance;
 }
