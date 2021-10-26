@@ -50,7 +50,6 @@ app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
     mqttUnsubscribeAll();
-
     if (process.platform !== 'darwin') {
         app.quit();
     }
@@ -74,13 +73,11 @@ app.on('second-instance', () => {
 });
 
 ipcMain.on('subscribe', (event, [network, bechAddress]) => {
-    console.log(`Subscribing to ${bechAddress} on ${network} network.`);
     mqttSubscribe(network, bechAddress, () => {
-        window.webContents.send('activityOnAddress', bechAddress);
+        window.webContents.send('activityOnAddress', { network, bechAddress });
     });
 });
 
 ipcMain.on('unsubscribe', (event, [network, bechAddress]) => {
-    console.log(`Unsubscribing from ${bechAddress} on ${network} network.`);
     mqttUnsubscribe(network, bechAddress);
 });

@@ -12,6 +12,9 @@
 
     onMount(async () => {
         promise = addressInfo.initialize();
+        window.api.receive('activityOnAddress', ({ network, bechAddress }) =>
+            addressInfo.refreshBalance(network, bechAddress),
+        );
     });
 
     $: window.localStorage.setItem(LocalStorageKey.Network, JSON.stringify($currentNetwork));

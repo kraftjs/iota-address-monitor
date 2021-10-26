@@ -2,7 +2,7 @@ declare global {
     interface Window {
         api: {
             send: (channel: string, [network, bechAddress]: [NetworkType, string]) => void;
-            recieve: (channel: string, func: (arg0: any) => void) => void;
+            receive: (channel: string, func: (arg0: any) => void) => void;
         };
     }
 }

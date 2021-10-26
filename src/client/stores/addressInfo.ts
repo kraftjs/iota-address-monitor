@@ -25,8 +25,8 @@ export const addressInfo = {
         });
     },
     initialize: async () => {
-        const devnetAddressInfo = await name(NetworkType.Dev, LocalStorageKey.Devnet);
-        const mainnetAddressInfo = await name(NetworkType.Main, LocalStorageKey.Mainnet);
+        const devnetAddressInfo = await getBalancesAndMqttSubscribe(NetworkType.Dev, LocalStorageKey.Devnet);
+        const mainnetAddressInfo = await getBalancesAndMqttSubscribe(NetworkType.Main, LocalStorageKey.Mainnet);
         update((self) => {
             self.devnet = devnetAddressInfo;
             self.mainnet = mainnetAddressInfo;
@@ -34,6 +34,18 @@ export const addressInfo = {
         });
         new Promise<void>(function (resolve) {
             setTimeout(() => resolve(), 1000);
+        });
+    },
+    refreshBalance: async (network: NetworkType, addressToRefresh: string) => {
+        const refreshedAddressBalancePromise: Promise<number> = retrieveBalance(network, addressToRefresh);
+        update((self) => {
+            self[network] = self[network].map(({ bechAddress, balance }) => {
+                if (bechAddress === addressToRefresh) {
+                    balance = refreshedAddressBalancePromise;
+                }
+                return { bechAddress, balance };
+            });
+            return self;
         });
     },
     set,
@@ -45,7 +57,7 @@ function loadFromLocalStorage(storageKey: LocalStorageKey): Address[] {
     return bechAddresses.map((bechAddress) => ({ bechAddress, balance: 0 }));
 }
 
-async function name(network: NetworkType, storageKey: LocalStorageKey): Promise<Address[]> {
+async function getBalancesAndMqttSubscribe(network: NetworkType, storageKey: LocalStorageKey): Promise<Address[]> {
     return Promise.all(
         loadFromLocalStorage(storageKey).map(async ({ bechAddress, balance }: Address) => {
             balance = await retrieveBalance(network, bechAddress);
