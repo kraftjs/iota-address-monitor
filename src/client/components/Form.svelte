@@ -12,7 +12,7 @@
             if ($addressInfo[$currentNetwork].find(({ bechAddress }: Address) => bechAddress === address)) {
                 console.log(`${address} already present`);
             } else {
-                addressInfo.add($currentNetwork, address);
+                addressInfo.addAddress($currentNetwork, address);
                 address = '';
             }
         } else {

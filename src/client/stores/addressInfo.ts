@@ -10,13 +10,13 @@ const { subscribe, set, update } = writable<{ devnet: Address[]; mainnet: Addres
 
 export const addressInfo = {
     subscribe,
-    remove: (network: NetworkType, addressToRemove: string) =>
+    removeAddress: (network: NetworkType, addressToRemove: string) =>
         update((self) => {
             self[network] = self[network].filter(({ bechAddress }) => addressToRemove !== bechAddress);
             window.api.send('unsubscribe', [network, addressToRemove]);
             return self;
         }),
-    add: async (network: NetworkType, newAddress: string) => {
+    addAddress: async (network: NetworkType, newAddress: string) => {
         const newAddressBalancePromise: Promise<number> = retrieveBalance(network, newAddress);
         update((self) => {
             self[network] = [...self[network], { bechAddress: newAddress, balance: newAddressBalancePromise }];

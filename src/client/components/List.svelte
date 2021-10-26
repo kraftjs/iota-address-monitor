@@ -14,7 +14,7 @@
 
     function handleDelete(addressToRemove: String) {
         console.log(`handleDelete ${addressToRemove}`);
-        addressInfo.remove($currentNetwork, addressToRemove);
+        addressInfo.removeAddress($currentNetwork, addressToRemove);
     }
 </script>
 

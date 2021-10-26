@@ -1,6 +1,6 @@
 {
   "name": "iota-address-monitor",
-  "productName": "IOTA Address Monitor",
+  "productName": "IOTA-Address-Monitor",
   "description": "Electron application to monitor IOTA addresses for their latest balances; written in Svelte and Typescript",
   "author": "Jason Kraft",
   "license": "MIT",
@@ -49,7 +49,7 @@
     "sirv-cli": "^1.0.0"
   },
   "build": {
-    "productName": "IOTA Address Monitor",
+    "productName": "IOTA-Address-Monitor",
     "appId": "iota-address-monitor",
     "directories": {
       "buildResources": "./public",
